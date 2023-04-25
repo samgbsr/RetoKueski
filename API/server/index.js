@@ -1,10 +1,14 @@
 const express = require("express");
 
+const cors = require('cors');
+
 const PORT = process.env.PORT || 3001;
 
 const app = express();
 
 const mysql = require('mysql2/promise');
+
+app.use(cors());
 
 //BD
 const pool = mysql.createPool({
@@ -27,7 +31,7 @@ app.get("/dashboard/pending", async (req, res) => {
         const connection = await pool.getConnection();
         const [rows] = await connection.execute("CALL sp_get_pending_petitions() ");
         connection.release();
-        res.json(rows);
+        res.json(rows[0]);
     }
     catch (err) {
         console.error(err);
