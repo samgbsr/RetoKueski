@@ -6,13 +6,36 @@
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.2.1/dist/css/bootstrap.min.css"
         integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <style>
+        /* Define table styles here */
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #ddd;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container">
-        <table id="dashTable" class="table">
-        </table>
-    </div>
+    <h1>Unreviewed Petitions</h1>
+    <table id="unreviewed-table">
+        <thead>
+            <tr>
+                <th>Petition ID</th>
+                <th>Client Full Name</th>
+                <th>Arco Right</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="/js/dashboard.js"></script>
 </body>
