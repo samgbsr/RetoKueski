@@ -66,7 +66,7 @@ app.get('/user/:id', async (req, res) => {
         const connection = await pool.getConnection();
         const [rows] = await connection.execute('CALL get_client_info(?)', [id]);
         connection.release();
-        res.json(rows);
+        res.json(rows[0]);
 
     } catch (err) {
         console.error(err);
@@ -89,7 +89,6 @@ app.put('/user/:id/opposition', async (req, res) => {
 });
 
 //endpoints PETITION
-
 app.get('/petition/:id/', async (req, res) => {
     const { id } = req.params;
 
@@ -112,7 +111,7 @@ app.get('/petition/:id/comment', async (req, res) => {
         const connection = await pool.getConnection();
         const [rows] = await connection.execute('CALL get_arco_comment(?)', [id]);
         connection.release();
-        res.json(rows);
+        res.json(rows[0]);
 
     } catch (err) {
         console.error(err);
@@ -141,7 +140,7 @@ app.put('/petition/:id/reject', async (req, res) => {
         const connection = await pool.getConnection();
         await connection.execute('CALL reject_arco_petition(?)', [id]);
         connection.release();
-        res.json({ message: `Petition ${id} has been rejected` });
+        res.json({ message: `ARCO Petition ${id} has been rejected` });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error updating the database');

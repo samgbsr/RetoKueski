@@ -60,22 +60,6 @@ const GetPetition = async (id) => {
     }
 };
 
-/*
-const UnreviewedTable = async () => {
-    try {
-        const response = await GetPendingPetitions();
-        console.log(response);
-        const formattedData = response.map(row => {
-            const { PETITION_ID, CLIENT_FULL_NAME, ARCO_RIGHT, CREATED_AT } = row;
-            return { PETITION_ID, CLIENT_FULL_NAME, ARCO_RIGHT, CREATED_AT };
-        });
-        console.log(JSON.stringify(formattedData));
-    } catch (error) {
-        console.error(error);
-    }
-};
-*/
-
 const UnreviewedTable = async () => {
     try {
         const response = await GetPendingPetitions();
@@ -103,7 +87,7 @@ const UnreviewedTable = async () => {
 
             const button = document.createElement("button");
             button.className = "btn btn-primary";
-            button.innerHTML = "Ver Petición";
+            button.innerHTML = "Ver";
             button.onclick = async function () {
                 try {
                     const response = await GetPetition(row.PETITION_ID);
@@ -168,11 +152,11 @@ const showModal = async () => {
         const modalTitle = modalContent.querySelector(".modal-title");
         const modalBody = modalContent.querySelector(".modal-body");
 
-        modalTitle.textContent = `Petition ${data[0].PETITION_ID}`;
+        modalTitle.textContent = `Petición ${data[0].PETITION_ID}`;
         modalBody.innerHTML = `
-      <p>Client name: ${data[0].CLIENT_FULL_NAME}</p>
-      <p>Arco right: ${data[0].ARCO_RIGHT}</p>
-      <p>Created at: ${data[0].CREATED_AT}</p>
+      <p>Cliente: ${data[0].CLIENT_FULL_NAME}</p>
+      <p>Derecho por ejercer: ${data[0].ARCO_RIGHT}</p>
+      <p>Comentario: ${data[0].PETITION_COMMENT}</p>
     `;
 
         modal.style.display = "block";
