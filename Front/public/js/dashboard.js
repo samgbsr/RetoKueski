@@ -13,120 +13,170 @@ $(document).ready(async function () {
         }
     });
 
+
     // Show the initial tab
     UnreviewedTable(unreviewedTable);
-    });
+});
 
-    const GetPendingPetitions = async () => {
-        try {
-            const response = await $.ajax({
-                async: true
-                , url: `${url}/dashboard/pending`
-                , type: 'GET'
-                , dataType: 'json'
-            });
-            return response;
-        } catch (error) {
-            console.error(error);
-        }
-    };
+const GetPendingPetitions = async () => {
+    try {
+        const response = await $.ajax({
+            async: true
+            , url: `${url}/dashboard/pending`
+            , type: 'GET'
+            , dataType: 'json'
+        });
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
+};
 
-    const GetNotPendingPetitions = async () => {
-        try {
-            const response = await $.ajax({
-                async: true
-                , url: `${url}/dashboard/notPending`
-                , type: 'GET'
-                , dataType: 'json'
-            });
-            return response;
-        } catch (error) {
-            console.error(error);
-        }
-    };
+const GetNotPendingPetitions = async () => {
+    try {
+        const response = await $.ajax({
+            async: true
+            , url: `${url}/dashboard/notPending`
+            , type: 'GET'
+            , dataType: 'json'
+        });
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
+};
 
-    /*
-    const UnreviewedTable = async () => {
-        try {
-            const response = await GetPendingPetitions();
-            console.log(response);
-            const formattedData = response.map(row => {
-                const { PETITION_ID, CLIENT_FULL_NAME, ARCO_RIGHT, CREATED_AT } = row;
-                return { PETITION_ID, CLIENT_FULL_NAME, ARCO_RIGHT, CREATED_AT };
-            });
-            console.log(JSON.stringify(formattedData));
-        } catch (error) {
-            console.error(error);
-        }
-    };
-    */
+const GetPetition = async (id) => {
+    try {
+        const response = await $.ajax({
+            async: true
+            , url: `${url}/petition/${id}`
+            , type: 'GET'
+            , dataType: 'json'
+        });
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
+};
 
-    const UnreviewedTable = async () => {
-        try {
-            const response = await GetPendingPetitions();
-            const formattedData = response.map(row => {
-                const {
-                    PETITION_ID,
-                    CLIENT_FULL_NAME,
-                    ARCO_RIGHT,
-                    CREATED_AT } = row;
-                const formattedDate = new Date(CREATED_AT).toLocaleString();
-                return { PETITION_ID, CLIENT_FULL_NAME, ARCO_RIGHT, formattedDate };
-            });
+/*
+const UnreviewedTable = async () => {
+    try {
+        const response = await GetPendingPetitions();
+        console.log(response);
+        const formattedData = response.map(row => {
+            const { PETITION_ID, CLIENT_FULL_NAME, ARCO_RIGHT, CREATED_AT } = row;
+            return { PETITION_ID, CLIENT_FULL_NAME, ARCO_RIGHT, CREATED_AT };
+        });
+        console.log(JSON.stringify(formattedData));
+    } catch (error) {
+        console.error(error);
+    }
+};
+*/
 
-            const table = $('#unreviewed-table');
-            const tbody = table.find('tbody');
+const UnreviewedTable = async () => {
+    try {
+        const response = await GetPendingPetitions();
+        const formattedData = response.map(row => {
+            const {
+                PETITION_ID,
+                CLIENT_FULL_NAME,
+                ARCO_RIGHT,
+                CREATED_AT } = row;
+            const formattedDate = new Date(CREATED_AT).toLocaleString();
+            return { PETITION_ID, CLIENT_FULL_NAME, ARCO_RIGHT, formattedDate };
+        });
 
-            // Remove existing rows
-            tbody.empty();
+        const table = $('#unreviewed-table');
+        const tbody = table.find('tbody');
 
-            // Add new rows
-            formattedData.forEach(row => {
-                const tr = $('<tr>');
-                Object.values(row).forEach(value => {
-                    const td = $('<td>').text(value);
-                    tr.append(td);
-                });
-                tbody.append(tr);
-            });
-        } catch (error) {
-            console.error(error);
-        }
-    };
+        tbody.empty();
 
-    const ReviewedTable = async () => {
-        try {
-            const response = await GetNotPendingPetitions();
-            const formattedData = response.map(row => {
-                const {
-                    PETITION_ID,
-                    CLIENT_FULL_NAME,
-                    ARCO_RIGHT,
-                    CURRENT_STATUS,
-                    CREATED_AT, UPDATED_AT } = row;
-                const formattedDate1 = new Date(CREATED_AT).toLocaleString();
-                const formattedDate2 = new Date(UPDATED_AT).toLocaleString();
-                return { PETITION_ID, CLIENT_FULL_NAME, ARCO_RIGHT, CURRENT_STATUS, formattedDate1, formattedDate2 };
+        formattedData.forEach(row => {
+            const tr = $('<tr>');
+            Object.values(row).forEach(value => {
+                const td = $('<td>').text(value);
+                tr.append(td);
             });
 
-            const table = $('#reviewed-table');
-            const tbody = table.find('tbody');
+            const button = document.createElement("button");
+            button.className = "btn btn-primary";
+            button.innerHTML = "Ver Petición";
+            button.onclick = async function () {
+                try {
+                    const response = await GetPetition(row.PETITION_ID);
+                    sessionStorage.setItem("petition", JSON.stringify(response));
+                    await showModal();
+                } catch (error) {
+                    console.error(error);
+                }
+            };
 
-            // Remove existing rows
-            tbody.empty();
+            const td = $('<td>').append(button);
+            tr.append(td);
+            tbody.append(tr);
+        });
 
-            // Add new rows
-            formattedData.forEach(row => {
-                const tr = $('<tr>');
-                Object.values(row).forEach(value => {
-                    const td = $('<td>').text(value);
-                    tr.append(td);
-                });
-                tbody.append(tr);
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const ReviewedTable = async () => {
+    try {
+        const response = await GetNotPendingPetitions();
+        const formattedData = response.map(row => {
+            const {
+                PETITION_ID,
+                CLIENT_FULL_NAME,
+                ARCO_RIGHT,
+                CURRENT_STATUS,
+                CREATED_AT, UPDATED_AT } = row;
+            const formattedDate1 = new Date(CREATED_AT).toLocaleString();
+            const formattedDate2 = new Date(UPDATED_AT).toLocaleString();
+            return { PETITION_ID, CLIENT_FULL_NAME, ARCO_RIGHT, CURRENT_STATUS, formattedDate1, formattedDate2 };
+        });
+
+        const table = $('#reviewed-table');
+        const tbody = table.find('tbody');
+
+        // Remove existing rows
+        tbody.empty();
+
+        // Add new rows
+        formattedData.forEach(row => {
+            const tr = $('<tr>');
+            Object.values(row).forEach(value => {
+                const td = $('<td>').text(value);
+                tr.append(td);
             });
-        } catch (error) {
-            console.error(error);
-        }
-    };
+            tbody.append(tr);
+        });
+    } catch (error) {
+        console.error(error);
+    }
+};
 
+const showModal = async () => {
+    try {
+        const data = JSON.parse(sessionStorage.getItem("petition"));
+        console.log(data);
+        const modal = document.getElementById("myModal");
+        const modalContent = modal.querySelector(".modal-content");
+        const modalTitle = modalContent.querySelector(".modal-title");
+        const modalBody = modalContent.querySelector(".modal-body");
 
+        modalTitle.textContent = `Petition ${data[0].PETITION_ID}`;
+        modalBody.innerHTML = `
+      <p>Client name: ${data[0].CLIENT_FULL_NAME}</p>
+      <p>Arco right: ${data[0].ARCO_RIGHT}</p>
+      <p>Created at: ${data[0].CREATED_AT}</p>
+    `;
+
+        modal.style.display = "block";
+    } catch (error) {
+        console.error(error);
+    }
+};
