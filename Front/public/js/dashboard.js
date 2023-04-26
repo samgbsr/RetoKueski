@@ -5,7 +5,7 @@ $(document).ready(async function () {
     const reviewedTable = $('#reviewed-table');
 
     $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-        const target = $(e.target).attr("href"); // activated tab
+        const target = $(e.target).attr("href");
         if (target === '#unreviewed-tab') {
             UnreviewedTable(unreviewedTable);
         } else if (target === '#reviewed-tab') {
@@ -13,8 +13,6 @@ $(document).ready(async function () {
         }
     });
 
-
-    // Show the initial tab
     UnreviewedTable(unreviewedTable);
 });
 
@@ -59,6 +57,34 @@ const GetPetition = async (id) => {
         console.error(error);
     }
 };
+
+const approvePetition = async (id) => {
+    try {
+        const response = await $.ajax({
+            async: true
+            , url: `${url}/petition/${id}/approve`
+            , type: 'PUT'
+            , dataType: 'json'
+        });
+        return response;
+    } catch {
+        console.error(error);
+    }
+}
+
+const rejectPetition = async (id) => {
+    try {
+        const response = await $.ajax({
+            async: true
+            , url: `${url}/petition/${id}/reject`
+            , type: 'PUT'
+            , dataType: 'json'
+        });
+        return response;
+    } catch {
+        console.error(error);
+    }
+}
 
 const UnreviewedTable = async () => {
     try {
@@ -164,3 +190,5 @@ const showModal = async () => {
         console.error(error);
     }
 };
+
+
