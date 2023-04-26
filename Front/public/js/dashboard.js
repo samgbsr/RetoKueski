@@ -1,4 +1,4 @@
-const url = 'http://localhost:3001'; // The URL of the back-end server
+const url = 'http://localhost:3001'; // URL API
 
 $(document).ready(async function () {
     const unreviewedTable = $('#unreviewed-table');
