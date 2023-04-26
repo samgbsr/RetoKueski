@@ -8,6 +8,7 @@ const app = express();
 
 const mysql = require('mysql2/promise');
 
+app.use(express.json());
 app.use(cors());
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
 app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist/umd/'));
