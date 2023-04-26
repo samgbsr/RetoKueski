@@ -1,19 +1,17 @@
 const url = 'http://localhost:3001'; // URL API
 
 $(document).ready(async function () {
-    const unreviewedTable = $('#unreviewed-table');
-    const reviewedTable = $('#reviewed-table');
+
+    UnreviewedTable();
 
     $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
         const target = $(e.target).attr("href");
         if (target === '#unreviewed-tab') {
-            UnreviewedTable(unreviewedTable);
+            UnreviewedTable();
         } else if (target === '#reviewed-tab') {
-            ReviewedTable(reviewedTable);
+            ReviewedTable();
         }
     });
-
-    UnreviewedTable(unreviewedTable);
 });
 
 const GetPendingPetitions = async () => {
@@ -184,6 +182,20 @@ const showModal = async () => {
       <p>Derecho por ejercer: ${data[0].ARCO_RIGHT}</p>
       <p>Comentario: ${data[0].PETITION_COMMENT}</p>
     `;
+    
+        const aceptarBtn = modalContent.querySelector(".btn-success");
+        aceptarBtn.addEventListener("click", () => {
+            modal.style.display = "none";
+            const toast = new bootstrap.Toast(document.getElementById("successToast"));
+            toast.show();
+        });
+
+        const rechazarBtn = modalContent.querySelector(".btn-danger");
+        rechazarBtn.addEventListener("click", () => {
+            modal.style.display = "none";
+            const toast = new bootstrap.Toast(document.getElementById("dangerToast"));
+            toast.show();
+        });
 
         modal.style.display = "block";
     } catch (error) {

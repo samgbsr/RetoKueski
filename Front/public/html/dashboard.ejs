@@ -53,6 +53,14 @@
             text-decoration: none;
             cursor: pointer;
         }
+
+        .toast-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
     </style>
 </head>
 
@@ -115,6 +123,29 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-success">Aceptar</button>
                 <button type="button" class="btn btn-danger">Rechazar</button>
+            </div>
+        </div>
+    </div>
+
+    <!--Toasts-->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-white">
+                <strong class="me-auto">Aprobada</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Petición aprobada con éxito.
+            </div>
+        </div>
+
+        <div id="dangerToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-danger text-white">
+                <strong class="me-auto">Rechazada           </strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Petición rechazada con éxito.
             </div>
         </div>
     </div>
