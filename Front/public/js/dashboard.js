@@ -163,7 +163,7 @@ const showModal = async () => {
     try {
         const data = JSON.parse(sessionStorage.getItem("petition"));
         console.log(data);
-        const modal = document.getElementById("myModal");
+        const modal = document.getElementById("InfoModal");
         const modalContent = modal.querySelector(".modal-content");
         const modalTitle = modalContent.querySelector(".modal-title");
         const modalBody = modalContent.querySelector(".modal-body");

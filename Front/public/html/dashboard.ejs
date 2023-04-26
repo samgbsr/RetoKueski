@@ -115,18 +115,26 @@
             </div>
         </div>
     </div>
-    <div id="myModal" class="modal">
-        <!-- Modal content -->
+
+    <!-- Modal Info -->
+    <div id="InfoModal" class="modal">
         <div class="modal-content">
-          <div class="modal-header">
-            <span class="close">&times;</span>
-            <h2 class="modal-title">Modal Header</h2>
-          </div>
-          <div class="modal-body">
-            <p>Some text in the modal body</p>
-          </div>
+            <div class="modal-header">
+                <h2 class="modal-title">Modal Header</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+            </div>
         </div>
-      </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById("InfoModal");
+        const closeButton = modal.querySelector(".close");
+        closeButton.addEventListener("click", function () {
+            modal.style.display = "none";
+        });
+    </script>
     <script src="/jquery/jquery.min.js"></script>
     <script src="/bootstrap/js/bootstrap.min.js"></script>
     <script src="/js/dashboard.js"></script>
