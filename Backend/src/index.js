@@ -158,6 +158,37 @@ app.put('/user/:id/cancelation', async (req, res) => {
     }
 });
 
+const approve_rectification = `
+UPDATE CLIENT
+SET CLIENT_NAME = RECTIFICATION_TEMP.NEW_NAME,
+    CLIENT_FIRST_LASTNAME = RECTIFICATION_TEMP.NEW_FIRST_LASTNAME,
+    CLIENT_SECOND_LASTNAME = RECTIFICATION_TEMP.NEW_SECOND_LASTNAME,
+    CLIENT_BIRTHDATE = RECTIFICATION_TEMP.NEW_BIRTHDATE,
+    CLIENT_NATIONALITY = RECTIFICATION_TEMP.NEW_NATIONALITY,
+    CLIENT_STATE_OF_BIRTH = RECTIFICATION_TEMP.NEW_STATE_OF_BIRTH,
+    CLIENT_CURP = RECTIFICATION_TEMP.NEW_CURP,
+    CLIENT_ECONOMIC_ACTIVITY = RECTIFICATION_TEMP.NEW_ECONOMIC_ACTIVITY,
+    CLIENT_GENDER = RECTIFICATION_TEMP.NEW_GENDER,
+    CLIENT_PHONE_NUMBER = RECTIFICATION_TEMP.NEW_PHONE_NUMBER,
+    CLIENT_EMAIL = RECTIFICATION_TEMP.NEW_EMAIL,
+    UPDATED_AT = NOW()
+WHERE CLIENT.CLIENT_ID = RECTIFICATION_TEMP.CLIENT_ID;
+AND RECTIFICATION_TEMP.CLIENT_ID = ?;
+`;
+
+app.patch('/user/:id/rectification', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const connection = await pool.getConnection();
+        await connection.execute(approve_rectification, [id]);
+        connection.release();
+        res.json({ message: `Client ${id} has been set as deleted` });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error updating the database');
+    }
+});
+
 //endpoints PETITION
 
 const get_arco_petition_info = 
