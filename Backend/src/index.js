@@ -182,7 +182,7 @@ app.patch('/user/:id/rectification', async (req, res) => {
         const connection = await pool.getConnection();
         await connection.execute(approve_rectification, [id]);
         connection.release();
-        res.json({ message: `Client ${id} has been set as deleted` });
+        res.json({ message: `Client ${id} has been updated` });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error updating the database');
@@ -276,7 +276,7 @@ FROM RECTIFICATION_TEMP
 WHERE PETITION_ID = ?;
 `;
 
-app.get('/rectification/:id/', async (req, res) => {
+app.get('/petition/:id/rectification', async (req, res) => {
     const { id } = req.params;
 
     try {
