@@ -1,20 +1,16 @@
-const express = require("express");
-const cors = require('cors');
+import express from 'express';
+import cors from 'cors'; 
+import { PORT } from './config.js'
+import { pool } from './db.js'
+
 const app = express();
 const mysql = require('mysql2/promise');
 
 app.use(express.json());
 app.use(cors());
 
-import { PORT, MYSQLDATABASE, MYSQLHOST, MYSQLPASSWORD, MYSQLUSER} from './config.js'
 
-//BD
-const pool = mysql.createPool({
-    host: MYSQLHOST,
-    user: MYSQLUSER,
-    password: MYSQLPASSWORD,
-    database: MYSQLDATABASE
-})
+
 
 //puerto localhost
 app.listen(PORT, () => {
