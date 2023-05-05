@@ -295,13 +295,15 @@ function HomePage({ data, pendingData, notPendingData }) {
         useEffect(() => {
             const fetchData = async () => {
                 try {
-                    const responseClientOldData = await fetch(`https://retokueski-production.up.railway.app/user/${id}`);
-                    const clientOldData = await responseClientOldData.json();
-                    setClientOldData(clientOldData);
-
                     const responseClientData = await fetch(`https://retokueski-production.up.railway.app/petition/${id}/rectification`);
                     const clientData = await responseClientData.json();
                     setClientData(clientData);
+
+                    const responseClientOldData = await fetch(`https://retokueski-production.up.railway.app/user/${clientData.CLIENT_ID}`);
+                    const clientOldData = await responseClientOldData.json();
+                    setClientOldData(clientOldData);
+
+
 
                     const responsePetitionData = await fetch(`https://retokueski-production.up.railway.app/petition/${id}`);
                     const petitionData = await responsePetitionData.json();
@@ -315,57 +317,70 @@ function HomePage({ data, pendingData, notPendingData }) {
         }, []);
 
         return (
-            <Table striped>
-                <thead>
-                    <tr>
-                        <th>Cliente</th>
-                        <td>{clientOldData.full_name}</td>
-                        <th>{clientData.new_full_name}</th>
-                    </tr>
-                    <tr>
-                        <th>Fecha de nacimiento</th>
-                        <td>{clientOldData.CLIENT_BIRTHDATE}</td>
-                        <td>{clientData.NEW_BIRTHDATE}</td>
-                    </tr>
-                    <tr>
-                        <th>Nacionalidad</th>
-                        <td>{clientOldData.CLIENT_NATIONALITY}</td>
-                        <td>{clientData.NEW_NATIONALITY}</td>
-                    </tr>
-                    <tr>
-                        <th>Estado de nacimiento</th>
-                        <td>{clientOldData.CLIENT_STATE_OF_BIRTH}</td>
-                        <td>{clientData.NEW_STATE_OF_BIRTH}</td>
-                    </tr>
-                    <tr>
-                        <th>CURP</th>
-                        <td>{clientOldData.CLIENT_CURP}</td>
-                        <td>{clientData.NEW_CURP}</td>
-                    </tr>
-                    <tr>
-                        <th>Actividad Económica</th>
-                        <td>{clientOldData.CLIENT_ECONOMIC_ACTIVITY}</td>
-                        <td>{clientData.NEW_ECONOMIC_ACTIVITY}</td>
-                    </tr>
-                    <tr>
-                        <th>Género</th>
-                        <td>{clientOldData.CLIENT_GENDER}</td>
-                        <td>{clientData.NEW_GENDER}</td>
-                    </tr>                    
-                    <tr>
-                        <th>Número de teléfono</th>
-                        <td>{clientOldData.CLIENT_PHONE_NUMBER}</td>
-                        <td>{clientData.new}</td>
-                    </tr>
-                    <tr>
-                        <th>Email</th>
-                        <td>{clientOldData.CLIENT_EMAIL}</td>
-                        <td>{clientData.NEW_EMAIL}</td>
-                    </tr>
-                </thead>
-                <tbody></tbody>
+            <Card.Body>
+                <Card className='p-3'>
+                    <Table striped>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Dato Previo</th>
+                                <th>Dato Nuevo</th>
+                            </tr>
+                            <tr>
+                                <th>Cliente</th>
+                                <td>{clientOldData.full_name}</td>
+                                <td style={{ color: 'green' }}>{clientData.new_full_name}</td>
+                            </tr>
+                            <tr>
+                                <th>Fecha de nacimiento</th>
+                                <td>{new Date(clientOldData.CLIENT_BIRTHDATE).toLocaleString('en-US', { timeZone: 'America/New_York' })}</td>
+                                <td style={{ color: 'green' }}>{new Date(clientData.NEW_BIRTHDATE).toLocaleString('en-US', { timeZone: 'America/New_York' })}</td>
+                            </tr>
+                            <tr>
+                                <th>Nacionalidad</th>
+                                <td>{clientOldData.CLIENT_NATIONALITY}</td>
+                                <td style={{ color: 'green' }}>{clientData.NEW_NATIONALITY}</td>
+                            </tr>
+                            <tr>
+                                <th>Estado de nacimiento</th>
+                                <td>{clientOldData.CLIENT_STATE_OF_BIRTH}</td>
+                                <td style={{ color: 'green' }}>{clientData.NEW_STATE_OF_BIRTH}</td>
+                            </tr>
+                            <tr>
+                                <th>CURP</th>
+                                <td>{clientOldData.CLIENT_CURP}</td>
+                                <td style={{ color: 'green' }}>{clientData.NEW_CURP}</td>
+                            </tr>
+                            <tr>
+                                <th>Actividad Económica</th>
+                                <td>{clientOldData.CLIENT_ECONOMIC_ACTIVITY}</td>
+                                <td style={{ color: 'green' }}>{clientData.NEW_ECONOMIC_ACTIVITY}</td>
+                            </tr>
+                            <tr>
+                                <th>Género</th>
+                                <td>{clientOldData.CLIENT_GENDER}</td>
+                                <td style={{ color: 'green' }}>{clientData.NEW_GENDER}</td>
+                            </tr>
+                            <tr>
+                                <th>Número de teléfono</th>
+                                <td>{clientOldData.CLIENT_PHONE_NUMBER}</td>
+                                <td style={{ color: 'green' }}>{clientData.NEW_PHONE_NUMBER}</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td>{clientOldData.CLIENT_EMAIL}</td>
+                                <td style={{ color: 'green' }}>{clientData.NEW_EMAIL}</td>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </Table>
+                </Card>
+                <Card className='p-3'>
+                    <ApprovePetitionButton idClient={clientData.CLIENT_ID} idPetition={petitionData.PETITION_ID} root={"rectification"} />
+                    <RejectPetitionButton idPetition={petitionData.PETITION_ID} />
+                </Card>
+            </Card.Body>
 
-            </Table>
 
         );
     };
@@ -390,7 +405,7 @@ function HomePage({ data, pendingData, notPendingData }) {
                 const oppositionResponse = await fetch(
                     `https://retokueski-production.up.railway.app/user/${idClient}/${root}`,
                     {
-                        method: 'PUT',
+                        method: 'PATCH',
                         headers: {
                             'Content-Type': 'application/json',
                         },
@@ -476,12 +491,10 @@ function HomePage({ data, pendingData, notPendingData }) {
                         <Card className="p-2">
                             <Card.Body>
                                 <Card className="p-3 ">
-                                    <Card.Subtitle className='mb-2 text-muted'>Perfil de Usuario</Card.Subtitle>
+                                    <Card.Subtitle className='mb-2 text-muted'>Nacho Kueski</Card.Subtitle>
                                 </Card>
-                                <Card className="p-3">
+                                <Card className="p-2">
                                     <Card.Title>Tablero Arco</Card.Title>
-                                    <Card.Subtitle className='mb-2 text-muted'>Pagina de inicio</Card.Subtitle>
-                                    <Card.Subtitle className='mb-2 text-muted'>Tablero</Card.Subtitle>
                                 </Card>
                             </Card.Body>
                         </Card>
@@ -522,7 +535,7 @@ function HomePage({ data, pendingData, notPendingData }) {
                                     </Modal.Body>
                                 </Modal>
 
-                                <Modal size="lg"show={showR} onHide={handleRectificationClose}>
+                                <Modal size="lg" show={showR} onHide={handleRectificationClose}>
                                     <Modal.Header closeButton>
                                         <Modal.Title>Rectificación de información</Modal.Title>
                                     </Modal.Header>
