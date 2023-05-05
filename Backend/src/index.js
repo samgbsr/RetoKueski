@@ -9,8 +9,6 @@ app.use(express.json());
 app.use(cors());
 
 
-
-
 //puerto localhost
 app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`);
