@@ -4,9 +4,9 @@ import { SSRProvider } from '@react-aria/ssr';
 import { Tab, Tabs, Container, Row, Col, Button, ButtonGroup, Form, Modal, Navbar, Toast, Nav, Alert, Card, Image, Pagination, Table } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.css'
 
-function HomePage({ data, pendingData }) {
+function HomePage({ data, pendingData, notPendingData }) {
 
-    if (!data || !pendingData) {
+    if (!data || !pendingData || !notPendingData) {
         return <div>Loading...</div>
     }
 
@@ -51,7 +51,7 @@ function HomePage({ data, pendingData }) {
                     </tr>
                 </thead>
                 <tbody>
-                    {pendingData.map((user) => (
+                    {notPendingData.map((user) => (
                         <tr key={user.PETITION_ID}>
                             <th>{user.PETITION_ID}</th>
                             <th>{user.CLIENT_FULL_NAME}</th>
@@ -151,11 +151,9 @@ function HomePage({ data, pendingData }) {
                         Comentario: {petitionData.PETITION_COMMENT}
                     </Card.Title>
                 </Card>
-                <Card className='p-2'>
-                    <ButtonGroup aria-label="Basic example">
-                        <Button variant="danger" onClick={() => rejectPetition(clientData.CLIENT_ID, petitionData.PETITION_ID)}>Rechazar</Button>
-                        <ApprovePetitionButton idClient={clientData.CLIENT_ID} idPetition={petitionData.PETITION_ID} />
-                    </ButtonGroup>
+                <Card className='p-3'>
+                    <ApprovePetitionButton idClient={clientData.CLIENT_ID} idPetition={petitionData.PETITION_ID} root={"cancelation"} />
+                    <RejectPetitionButton idPetition={petitionData.PETITION_ID} />
                 </Card>
             </Card.Body>
         );
@@ -232,11 +230,9 @@ function HomePage({ data, pendingData }) {
                         Comentario: {petitionData.PETITION_COMMENT}
                     </Card.Title>
                 </Card>
-                <Card className='p-2'>
-                    <ButtonGroup aria-label="Basic example">
-                        <Button variant="danger" onClick={rejectPetition}>Rechazar</Button>
-                        <Button variant="success" onClick={ApprovePetition}>Aprobar</Button>
-                    </ButtonGroup>
+                <Card className='p-3'>
+                    <ApprovePetitionButton idClient={clientData.CLIENT_ID} idPetition={petitionData.PETITION_ID} root={"opposition"} />
+                    <RejectPetitionButton idPetition={petitionData.PETITION_ID} />
                 </Card>
             </Card.Body>
         );
@@ -246,60 +242,135 @@ function HomePage({ data, pendingData }) {
     const [showR, setShowR] = useState(false);
     const handleRectificationClose = () => setShowR(false);
     const [selectedPetitionIdR, setSelectedPetitionIdR] = useState(null);
-    const handleRectification = () => setShowR(true);
-
-    const GetRectification = () => {
-        const [formData, setFormData] = useState({
-            user: '',
-            description: '',
-            id: '',
+    const handleRectification = (idPetition) => {
+        setSelectedPetitionIdR(idPetition);
+        setShowR(true);
+    }
+    const GetRectification = ({ id }) => {
+        const [clientOldData, setClientOldData] = useState({
+            CLIENT_ID: '',
+            full_name: '',
+            CLIENT_BIRTHDATE: '',
+            CLIENT_NATIONALITY: '',
+            CLIENT_STATE_OF_BIRTH: '',
+            CLIENT_CURP: '',
+            CLIENT_ECONOMIC_ACTIVITY: '',
+            CLIENT_GENDER: '',
+            CLIENT_PHONE_NUMBER: '',
+            CLIENT_EMAIL: '',
+            IS_CLIENT: '',
+            IS_BLOCKED: '',
+            IS_IN_OPOSITION: '',
+            CREATED_AT: '',
+            UPDATED_AT: '',
+            DELETED_AT: ''
         });
 
-        const handleInputChange = (event) => {
-            const { name, value } = event.target;
-            setFormData({ ...formData, [name]: value });
-        };
+        const [clientData, setClientData] = useState({
+            ID: '',
+            PETITION_ID: '',
+            CLIENT_ID: '',
+            new_full_name: '',
+            NEW_BIRTHDATE: '',
+            NEW_NATIONALITY: '',
+            NEW_STATE_OF_BIRTH: '',
+            NEW_CURP: '',
+            NEW_ECONOMIC_ACTIVITY: '',
+            NEW_GENDER: '',
+            NEW_PHONE_NUMBER: '',
+            NEW_EMAIL: ''
+        });
 
-        const handleSubmit = async (event) => {
-            const response = await fetch('https://tc2005b-sem2023-production.up.railway.app/comments', {
-                method: 'PATCH',
-                body: JSON.stringify(formData),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+        const [petitionData, setPetitionData] = useState({
+            PETITION_ID: '',
+            CLIENT_ID: '',
+            CLIENT_FULL_NAME: '',
+            ARCO_RIGHT: '',
+            CURRENT_STATUS: '',
+            PETITION_COMMENT: '',
+            CREATED_AT: '',
+            UPDATED_AT: ''
+        });
 
-            if (response.ok) {
-                setShowE(false);
-                console.log("PATCH done")
-            } else {
-                console.log("PATCH failed")
-            }
-        };
+        useEffect(() => {
+            const fetchData = async () => {
+                try {
+                    const responseClientOldData = await fetch(`https://retokueski-production.up.railway.app/user/${id}`);
+                    const clientOldData = await responseClientOldData.json();
+                    setClientOldData(clientOldData);
+
+                    const responseClientData = await fetch(`https://retokueski-production.up.railway.app/petition/${id}/rectification`);
+                    const clientData = await responseClientData.json();
+                    setClientData(clientData);
+
+                    const responsePetitionData = await fetch(`https://retokueski-production.up.railway.app/petition/${id}`);
+                    const petitionData = await responsePetitionData.json();
+                    setPetitionData(petitionData);
+
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+            fetchData();
+        }, []);
 
         return (
-            <Form>
-                <Form.Group controlId="formName" className="mb-3">
-                    <Form.Label>Username</Form.Label>
-                    <Form.Control type="text" name="user" required />
-                </Form.Group>
+            <Table striped>
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <td>{clientOldData.full_name}</td>
+                        <th>{clientData.new_full_name}</th>
+                    </tr>
+                    <tr>
+                        <th>Fecha de nacimiento</th>
+                        <td>{clientOldData.CLIENT_BIRTHDATE}</td>
+                        <td>{clientData.NEW_BIRTHDATE}</td>
+                    </tr>
+                    <tr>
+                        <th>Nacionalidad</th>
+                        <td>{clientOldData.CLIENT_NATIONALITY}</td>
+                        <td>{clientData.NEW_NATIONALITY}</td>
+                    </tr>
+                    <tr>
+                        <th>Estado de nacimiento</th>
+                        <td>{clientOldData.CLIENT_STATE_OF_BIRTH}</td>
+                        <td>{clientData.NEW_STATE_OF_BIRTH}</td>
+                    </tr>
+                    <tr>
+                        <th>CURP</th>
+                        <td>{clientOldData.CLIENT_CURP}</td>
+                        <td>{clientData.NEW_CURP}</td>
+                    </tr>
+                    <tr>
+                        <th>Actividad Económica</th>
+                        <td>{clientOldData.CLIENT_ECONOMIC_ACTIVITY}</td>
+                        <td>{clientData.NEW_ECONOMIC_ACTIVITY}</td>
+                    </tr>
+                    <tr>
+                        <th>Género</th>
+                        <td>{clientOldData.CLIENT_GENDER}</td>
+                        <td>{clientData.NEW_GENDER}</td>
+                    </tr>                    
+                    <tr>
+                        <th>Número de teléfono</th>
+                        <td>{clientOldData.CLIENT_PHONE_NUMBER}</td>
+                        <td>{clientData.new}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{clientOldData.CLIENT_EMAIL}</td>
+                        <td>{clientData.NEW_EMAIL}</td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
 
-                <Form.Group controlId="formMessage" className="mb-3">
-                    <Form.Label>Comment</Form.Label>
-                    <Form.Control as="textarea" rows={3} name="description" required />
-                </Form.Group>
+            </Table>
 
-                <Form.Group controlId="formId" className="mb-3">
-                    <Form.Label>Comment number</Form.Label>
-                    <Form.Control type="text" rows={3} name="id" required />
-                </Form.Group>
-
-                <Button type="submit" variant="success">Edit</Button>
-            </Form>
         );
     };
 
-    const ApprovePetitionButton = ({ idClient, idPetition }) => {
+    const ApprovePetitionButton = ({ idClient, idPetition, root }) => {
         const [message, setMessage] = useState('');
 
         const handleApprove = async () => {
@@ -317,7 +388,7 @@ function HomePage({ data, pendingData }) {
                 const approveData = await approveResponse.json();
 
                 const oppositionResponse = await fetch(
-                    `https://retokueski-production.up.railway.app/user/${idClient}/opposition`,
+                    `https://retokueski-production.up.railway.app/user/${idClient}/${root}`,
                     {
                         method: 'PUT',
                         headers: {
@@ -342,15 +413,49 @@ function HomePage({ data, pendingData }) {
                     </Button>
                 </Card>
                 <Card>
-                    Mensaje aprobado: {message}
+                    {message}
                 </Card>
 
             </>
         );
     };
 
-    const rejectPetition = () => {
-        console.log("Not now people")
+    const RejectPetitionButton = ({ idPetition }) => {
+        const [message, setMessage] = useState('');
+
+        const handleApprove = async () => {
+            try {
+                const response = await fetch(
+                    `https://retokueski-production.up.railway.app/petition/${idPetition}/reject`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({}),
+                    }
+                );
+                const data = await response.json();
+
+                setMessage(data.message);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        return (
+            <>
+                <Card>
+                    <Button variant="danger" onClick={handleApprove}>
+                        Rechazar
+                    </Button>
+                </Card>
+                <Card>
+                    {message}
+                </Card>
+
+            </>
+        );
     };
 
     return (
@@ -417,12 +522,12 @@ function HomePage({ data, pendingData }) {
                                     </Modal.Body>
                                 </Modal>
 
-                                <Modal show={showR} onHide={handleRectificationClose}>
+                                <Modal size="lg"show={showR} onHide={handleRectificationClose}>
                                     <Modal.Header closeButton>
                                         <Modal.Title>Rectificación de información</Modal.Title>
                                     </Modal.Header>
                                     <Modal.Body>
-                                        <GetRectification id={selectedPetitionIdO} />
+                                        <GetRectification id={selectedPetitionIdR} />
                                     </Modal.Body>
                                 </Modal>
                             </Card.Body>
@@ -455,8 +560,10 @@ export async function getServerSideProps() {
     const resPendingData = await fetch(`https://retokueski-production.up.railway.app/dashboard/pending`)
     const pendingData = await resPendingData.json()
 
+    const resNotPendingData = await fetch(`https://retokueski-production.up.railway.app/dashboard/notPending`)
+    const notPendingData = await resNotPendingData.json()
     // Pass data to the page via props
-    return { props: { data, pendingData } }
+    return { props: { data, pendingData, notPendingData } }
 }
 
 export default HomePage
