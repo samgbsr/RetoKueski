@@ -49,10 +49,9 @@ app.get("/dashboard/notPending", async (req, res) => {
 //endpoints USER
 app.get('/user/:id', async (req, res) => {
     const { id } = req.params;
-
     try {
         const connection = await pool.getConnection();
-        const [rows] = await connection.execute('CALL get_client_info(?)', [id]);
+        const [rows] = await connection.execute('CALL SELECT * FROM CLIENT WHERE CLIENT_ID=?', [id]);
         connection.release();
         res.json(rows[0]);
 
