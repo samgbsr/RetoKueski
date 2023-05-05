@@ -414,7 +414,7 @@ function HomePage({ data, pendingData, notPendingData }) {
                 );
                 const oppositionData = await oppositionResponse.json();
 
-                setMessage(approveData.message);
+                setShowC(false);
             } catch (error) {
                 console.log(error);
             }
@@ -423,7 +423,12 @@ function HomePage({ data, pendingData, notPendingData }) {
         return (
             <>
                 <Card>
-                    <Button variant="success" onClick={handleApprove}>
+                    <Button variant="success" onClick={() => {
+                        handleApprove();
+                        handleCancelationClose();
+                        handleRectificationClose();
+                        handleOppositionClose();
+                    }}>
                         Aprobar
                     </Button>
                 </Card>
@@ -461,7 +466,12 @@ function HomePage({ data, pendingData, notPendingData }) {
         return (
             <>
                 <Card>
-                    <Button variant="danger" onClick={handleApprove}>
+                    <Button variant="danger" onClick={() => {
+                        handleApprove();
+                        handleCancelationClose();
+                        handleRectificationClose();
+                        handleOppositionClose();
+                    }}>
                         Rechazar
                     </Button>
                 </Card>
