@@ -268,3 +268,26 @@ app.put('/petition/:id/reject', async (req, res) => {
     }
 });
 
+//endpoints para ver datos en rectificación
+
+const get_rectification_temp_info = `
+SELECT *
+FROM RECTIFICATION_TEMP
+WHERE PETITION_ID = ?;
+`;
+
+app.get('/rectification/:id/', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const connection = await pool.getConnection();
+        const [rows] = await connection.execute(get_rectification_temp_info, [id]);
+        connection.release();
+        res.json(rows[0]);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error retrieving data from the database');
+    }
+});
+
