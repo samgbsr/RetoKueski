@@ -565,7 +565,7 @@ function HomePage({ data, pendingData, notPendingData }) {
                 <Card>
                     <Col className='p-1'>
                         <Nav className="me-auto">
-                            <Nav.Link>Developers:</Nav.Link>
+                            <Nav.Link>Desarrolladores:</Nav.Link>
                             <Nav.Link href="https://github.com/esquivelgor">Guillermo Esquivel</Nav.Link>
                             <Nav.Link href="#features">Moises Hiram</Nav.Link>
                             <Nav.Link href="#features">Samuel Garcia</Nav.Link>
