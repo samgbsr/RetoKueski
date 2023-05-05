@@ -44,7 +44,6 @@ app.get("/dashboard/pending", async (req, res) => {
         const rows = await connection.execute(get_pending_petitions);
         connection.release();
         res.json(rows[0]);
-
     }
     catch (err) {
         console.error(err);
@@ -54,20 +53,20 @@ app.get("/dashboard/pending", async (req, res) => {
 
 const get_notPending_petitions = `
 SELECT ARCO_PETITIONS.PETITION_ID, 
-CONCAT(CLIENT.CLIENT_NAME, ' ', CLIENT.CLIENT_FIRST_LASTNAME, ' ', CLIENT.CLIENT_SECOND_LASTNAME) AS CLIENT_FULL_NAME, 
-CASE ARCO_PETITIONS.ARCO_RIGHT 
-WHEN 1 THEN 'Acceso' 
-WHEN 2 THEN 'Rectificación' 
-WHEN 3 THEN 'Cancelación' 
-WHEN 4 THEN 'Oposición' 
-ELSE '' 
-END AS ARCO_RIGHT, 
-ARCO_PETITIONS.CURRENT_STATUS, 
-ARCO_PETITIONS.CREATED_AT, 
-ARCO_PETITIONS.UPDATED_AT 
-FROM ARCO_PETITIONS 
-INNER JOIN CLIENT ON ARCO_PETITIONS.CLIENT_ID = CLIENT.CLIENT_ID
-WHERE ARCO_PETITIONS.CURRENT_STATUS != 'pendiente'";
+           CONCAT(CLIENT.CLIENT_NAME, ' ', CLIENT.CLIENT_FIRST_LASTNAME, ' ', CLIENT.CLIENT_SECOND_LASTNAME) AS CLIENT_FULL_NAME, 
+           CASE ARCO_PETITIONS.ARCO_RIGHT 
+               WHEN 1 THEN 'Acceso' 
+               WHEN 2 THEN 'Rectificación' 
+               WHEN 3 THEN 'Cancelación' 
+               WHEN 4 THEN 'Oposición' 
+               ELSE '' 
+           END AS ARCO_RIGHT,
+           ARCO_PETITIONS.CURRENT_STATUS,
+           ARCO_PETITIONS.CREATED_AT,
+           ARCO_PETITIONS.UPDATED_AT
+    FROM ARCO_PETITIONS 
+    INNER JOIN CLIENT ON ARCO_PETITIONS.CLIENT_ID = CLIENT.CLIENT_ID
+    WHERE ARCO_PETITIONS.CURRENT_STATUS != 'pendiente';
 `;
 
 app.get("/dashboard/notPending", async (req, res) => {
@@ -112,7 +111,6 @@ app.get('/user/:id', async (req, res) => {
         const [rows] = await connection.execute(get_client_info, [id]);
         connection.release();
         res.json(rows[0]);
-
     } catch (err) {
         console.error(err);
         res.status(500).send('Error retrieving data from the database');
@@ -121,7 +119,6 @@ app.get('/user/:id', async (req, res) => {
 
 app.put('/user/:id/opposition', async (req, res) => {
     const { id } = req.params;
-
     try {
         const connection = await pool.getConnection();
         await connection.execute('CALL approve_opposition(?)', [id]);
@@ -134,12 +131,33 @@ app.put('/user/:id/opposition', async (req, res) => {
 });
 
 //endpoints PETITION
+
+const get_arco_petition_info = 
+`
+SELECT ARCO_PETITIONS.PETITION_ID, 
+           CONCAT(CLIENT.CLIENT_NAME, ' ', CLIENT.CLIENT_FIRST_LASTNAME, ' ', CLIENT.CLIENT_SECOND_LASTNAME) AS CLIENT_FULL_NAME, 
+           CASE ARCO_PETITIONS.ARCO_RIGHT 
+               WHEN 1 THEN 'Acceso' 
+               WHEN 2 THEN 'Rectificación' 
+               WHEN 3 THEN 'Cancelación' 
+               WHEN 4 THEN 'Oposición' 
+               ELSE '' 
+           END AS ARCO_RIGHT,
+           ARCO_PETITIONS.CURRENT_STATUS,
+           ARCO_PETITIONS.PETITION_COMMENT,
+           ARCO_PETITIONS.CREATED_AT,
+           ARCO_PETITIONS.UPDATED_AT
+    FROM ARCO_PETITIONS 
+    INNER JOIN CLIENT ON ARCO_PETITIONS.CLIENT_ID = CLIENT.CLIENT_ID
+    WHERE ARCO_PETITIONS.PETITION_ID =?;
+`;
+
 app.get('/petition/:id/', async (req, res) => {
     const { id } = req.params;
 
     try {
         const connection = await pool.getConnection();
-        const [rows] = await connection.execute('CALL get_arco_petition_info(?)', [id]);
+        const [rows] = await connection.execute(get_arco_petition_info, [id]);
         connection.release();
         res.json(rows[0]);
 
