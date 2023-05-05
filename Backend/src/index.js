@@ -141,7 +141,7 @@ const approve_cancelation = `
 UPDATE CLIENT 
 SET IS_BLOCKED = 1, 
 UPDATED_AT = NOW(), 
-DELETED_AT = NOW();
+DELETED_AT = NOW()
 WHERE CLIENT_ID = ?;
 `;
 
