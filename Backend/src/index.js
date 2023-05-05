@@ -130,7 +130,7 @@ app.put('/user/:id/opposition', async (req, res) => {
         const connection = await pool.getConnection();
         await connection.execute(approve_oposition, [id]);
         connection.release();
-        res.json({ message: `Client ${id} has been set as in opposition` });
+        res.json({ message: `El cliente ${id} ha sido registrado como en oposición.` });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error updating the database');
@@ -151,7 +151,7 @@ app.put('/user/:id/cancelation', async (req, res) => {
         const connection = await pool.getConnection();
         await connection.execute(approve_cancelation, [id]);
         connection.release();
-        res.json({ message: `Client ${id} has been set as deleted` });
+        res.json({ message: `El cliente ${id} ha sido eliminado de manera lógica.` });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error updating the database');
@@ -182,7 +182,7 @@ app.patch('/user/:id/rectification', async (req, res) => {
         const connection = await pool.getConnection();
         await connection.execute(approve_rectification, [id]);
         connection.release();
-        res.json({ message: `Client ${id} has been updated` });
+        res.json({ message: `El cliente ${id} ha sido actualizado con éxito` });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error updating the database');
@@ -241,7 +241,7 @@ app.put('/petition/:id/approve', async (req, res) => {
         const connection = await pool.getConnection();
         await connection.execute(approve_arco_petition, [id]);
         connection.release();
-        res.json({ message: `ARCO Petition ${id} has been approved` });
+        res.json({ message: `La petición ARCO ${id} ha sido aprobada con éxito.` });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error updating the database');
@@ -261,7 +261,7 @@ app.put('/petition/:id/reject', async (req, res) => {
         const connection = await pool.getConnection();
         await connection.execute(reject_arco_petition, [id]);
         connection.release();
-        res.json({ message: `ARCO Petition ${id} has been rejected` });
+        res.json({ message: `La petición ARCO ${id} ha sido rechazada con éxito.` });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error updating the database');
