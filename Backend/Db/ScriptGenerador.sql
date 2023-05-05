@@ -161,7 +161,7 @@ DELIMITER //
 CREATE PROCEDURE add_arco_petition(
     IN c_id INT,
     IN a_right VARCHAR(1),
-    IN p_comment VARCHAR(200)
+    IN p_comment VARCHAR(255)
 )
 BEGIN
     DECLARE current_status_val VARCHAR(30);

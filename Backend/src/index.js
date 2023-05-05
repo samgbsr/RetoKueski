@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors'; 
-import { PORT } from './config.js'
-import { pool } from './db.js'
+import { PORT } from './config.js';
+import { pool } from './db.js';
+
 
 const app = express();
 
@@ -20,10 +21,13 @@ app.get("/test", (req, res) => {
 });
 
 //endpoints DASHBOARD
+
+const get_pending_petitions="SELECT ARCO_PETITIONS.PETITION_ID, CONCAT(CLIENT.CLIENT_NAME, ' ', CLIENT.CLIENT_FIRST_LASTNAME, ' ', CLIENT.CLIENT_SECOND_LASTNAME) AS CLIENT_FULL_NAME, CASE ARCO_PETITIONS.ARCO_RIGHT WHEN 1 THEN 'Acceso' WHEN 2 THEN 'Rectificación' WHEN 3 THEN 'Cancelación' WHEN 4 THEN 'Oposición' ELSE '' END AS ARCO_RIGHT, ARCO_PETITIONS.CREATED_AT FROM ARCO_PETITIONS INNER JOIN CLIENT ON ARCO_PETITIONS.CLIENT_ID = CLIENT.CLIENT_ID WHERE ARCO_PETITIONS.CURRENT_STATUS = 'pendiente';";;
+
 app.get("/dashboard/pending", async (req, res) => {
     try {
         const connection = await pool.getConnection();
-        const [rows] = await connection.execute("CALL sp_get_pending_petitions() ");
+        const [rows] = await connection.execute(get_pending_petitions);
         connection.release();
         res.json(rows[0]);
     }
