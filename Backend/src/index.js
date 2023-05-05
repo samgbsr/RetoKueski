@@ -29,7 +29,7 @@ app.get("/dashboard/pending", async (req, res) => {
         const connection = await pool.getConnection();
         const rows = await connection.execute(get_pending_petitions);
         connection.release();
-        res.send(JSON.stringify(rows));
+        res.json({ data: rows });
     }
     catch (err) {
         console.error(err);
@@ -44,7 +44,7 @@ app.get("/dashboard/notPending", async (req, res) => {
         const connection = await pool.getConnection();
         const rows = await connection.execute(get_notPending_petitions);
         connection.release();
-        res.send(JSON.stringify(rows));
+        res.json({ data: rows });
     }
     catch (err) {
         console.error(err);
