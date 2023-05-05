@@ -2,8 +2,6 @@ const express = require("express");
 
 const cors = require('cors');
 
-const PORT = process.env.PORT || 3001;
-
 const app = express();
 
 const mysql = require('mysql2/promise');
@@ -14,12 +12,14 @@ app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
 app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist/umd/'));
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/'));
 
+import { PORT, MYSQLDATABASE, MYSQLHOST, MYSQLPASSWORD, MYSQLUSER} from './config.js'
+
 //BD
 const pool = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "kueskiarco"
+    host: MYSQLHOST,
+    user: MYSQLUSER,
+    password: MYSQLPASSWORD,
+    database: MYSQLDATABASE
 })
 
 //puerto localhost
