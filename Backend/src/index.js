@@ -198,7 +198,7 @@ app.get('/petition/:id/', async (req, res) => {
 
 const approve_arco_petition = `
 UPDATE ARCO_PETITIONS 
-SET STATUS = 'aprobada', 
+SET CURRENT_STATUS = 'aprobada', 
 UPDATED_AT = NOW() 
 WHERE PETITION_ID = ?;
 `;
@@ -219,7 +219,7 @@ app.put('/petition/:id/approve', async (req, res) => {
 
 const reject_arco_petition = `
 UPDATE ARCO_PETITIONS 
-SET STATUS = 'rechazada', 
+SET CURRENT_STATUS = 'rechazada', 
 UPDATED_AT = NOW() 
 WHERE PETITION_ID = ?;
 `;
