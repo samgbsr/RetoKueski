@@ -4,7 +4,6 @@ import { PORT } from './config.js'
 import { pool } from './db.js'
 
 const app = express();
-const mysql = require('mysql2/promise');
 
 app.use(express.json());
 app.use(cors());
