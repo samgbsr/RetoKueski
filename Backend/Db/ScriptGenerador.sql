@@ -165,10 +165,13 @@ CREATE PROCEDURE add_arco_petition(
 )
 BEGIN
     DECLARE current_status_val VARCHAR(30);
+    DECLARE ACCESS_DATE DATETIME;
     IF a_right = '1' THEN
         SET current_status_val = "aprobada";
+        SET ACCESS_DATE = NOW();
     ELSE
         SET current_status_val = "pendiente";
+        SET ACCESS_DATE = NULL;
     END IF;
     
     INSERT INTO ARCO_PETITIONS (
@@ -176,13 +179,16 @@ BEGIN
         ARCO_RIGHT,
         CURRENT_STATUS,
         PETITION_COMMENT,
-        CREATED_AT
+        CREATED_AT,
+        UPDATED_AT
     ) VALUES (
         c_id,
         a_right,
         current_status_val,
         p_comment,
-        NOW()    );
+        NOW(),
+        ACCESS_DATE    
+        );
 END //
 DELIMITER;
 
