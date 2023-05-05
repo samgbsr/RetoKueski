@@ -67,7 +67,6 @@ function HomePage({ data, pendingData, notPendingData }) {
     };
 
 
-
     function SetArcoRight(pendingData, idPetition) {
         if (pendingData === 'Cancelación') {
             handleCancelation(idPetition);
@@ -123,13 +122,15 @@ function HomePage({ data, pendingData, notPendingData }) {
         useEffect(() => {
             const fetchData = async () => {
                 try {
-                    const responseClientData = await fetch(`https://retokueski-production.up.railway.app/user/${id}`);
-                    const clientData = await responseClientData.json();
-                    setClientData(clientData);
 
                     const responsePetitionData = await fetch(`https://retokueski-production.up.railway.app/petition/${id}`);
                     const petitionData = await responsePetitionData.json();
                     setPetitionData(petitionData);
+
+                    const responseClientData = await fetch(`https://retokueski-production.up.railway.app/user/${petitionData.CLIENT_ID}`);
+                    const clientData = await responseClientData.json();
+                    setClientData(clientData);
+
 
                 } catch (error) {
                     console.log(error);
@@ -202,13 +203,15 @@ function HomePage({ data, pendingData, notPendingData }) {
         useEffect(() => {
             const fetchData = async () => {
                 try {
-                    const responseClientData = await fetch(`https://retokueski-production.up.railway.app/user/${id}`);
-                    const clientData = await responseClientData.json();
-                    setClientData(clientData);
-
                     const responsePetitionData = await fetch(`https://retokueski-production.up.railway.app/petition/${id}`);
                     const petitionData = await responsePetitionData.json();
                     setPetitionData(petitionData);
+
+                    const responseClientData = await fetch(`https://retokueski-production.up.railway.app/user/${petitionData.CLIENT_ID}`);
+                    const clientData = await responseClientData.json();
+                    setClientData(clientData);
+
+                    
 
                 } catch (error) {
                     console.log(error);
@@ -405,7 +408,7 @@ function HomePage({ data, pendingData, notPendingData }) {
                 const oppositionResponse = await fetch(
                     `https://retokueski-production.up.railway.app/user/${idClient}/${root}`,
                     {
-                        method: 'PATCH',
+                        method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
                         },
@@ -563,9 +566,10 @@ function HomePage({ data, pendingData, notPendingData }) {
                     <Col className='p-1'>
                         <Nav className="me-auto">
                             <Nav.Link>Developers:</Nav.Link>
-                            <Nav.Link href="https://github.com/esquivelgor">Guillermo Esquivel Ortiz</Nav.Link>
+                            <Nav.Link href="https://github.com/esquivelgor">Guillermo Esquivel</Nav.Link>
                             <Nav.Link href="#features">Moises Hiram</Nav.Link>
                             <Nav.Link href="#features">Samuel Garcia</Nav.Link>
+                            <Nav.Link href="#features">Gonzalo Calderón</Nav.Link>
                         </Nav >
                     </Col>
                 </Card>
