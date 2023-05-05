@@ -51,7 +51,7 @@ app.get('/user/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const connection = await pool.getConnection();
-        const [rows] = await connection.execute('CALL SELECT * FROM CLIENT WHERE CLIENT_ID=?', [id]);
+        const [rows] = await connection.execute('SELECT * FROM CLIENT WHERE CLIENT_ID=?', [id]);
         connection.release();
         res.json(rows[0]);
 
