@@ -30,6 +30,7 @@ app.get("/dashboard/pending", async (req, res) => {
         const rows = await connection.execute(get_pending_petitions);
         connection.release();
         res.json({ data: rows });
+        
     }
     catch (err) {
         console.error(err);
