@@ -27,9 +27,9 @@ const get_pending_petitions="SELECT ARCO_PETITIONS.PETITION_ID, CONCAT(CLIENT.CL
 app.get("/dashboard/pending", async (req, res) => {
     try {
         const connection = await pool.getConnection();
-        const [rows] = await connection.execute(get_pending_petitions);
+        const rows = await connection.execute(get_pending_petitions);
         connection.release();
-        res.json(rows);
+        res.json({ data: rows });;
     }
     catch (err) {
         console.error(err);
@@ -42,9 +42,9 @@ const get_notPending_petitions = "SELECT ARCO_PETITIONS.PETITION_ID, CONCAT(CLIE
 app.get("/dashboard/notPending", async (req, res) => {
     try {
         const connection = await pool.getConnection();
-        const [rows] = await connection.execute(get_notPending_petitions);
+        const rows = await connection.execute(get_notPending_petitions);
         connection.release();
-        res.json(rows);
+        res.json({ data: rows });;
     }
     catch (err) {
         console.error(err);
