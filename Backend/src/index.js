@@ -271,7 +271,19 @@ app.put('/petition/:id/reject', async (req, res) => {
 //endpoints para ver datos en rectificación
 
 const get_rectification_temp_info = `
-SELECT *
+SELECT 
+ID,
+PETITION_ID,
+CLIENT_ID,
+CONCAT(NEW_NAME, ' ', NEW_FIRST_LASTNAME, ' ', NEW_SECOND_LASTNAME) AS new_full_name,
+NEW_BIRTHDATE,
+NEW_NATIONALITY,
+NEW_STATE_OF_BIRTH,
+NEW_CURP VARCHAR(18),
+NEW_ECONOMIC_ACTIVITY,
+NEW_GENDER,
+NEW_PHONE_NUMBER,
+NEW_EMAIL
 FROM RECTIFICATION_TEMP
 WHERE PETITION_ID = ?;
 `;
