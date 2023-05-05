@@ -1,5 +1,5 @@
 import express from 'express';
-import cors from 'cors'; 
+import cors from 'cors';
 import { PORT } from './config.js';
 import { pool } from './db.js';
 
@@ -22,7 +22,21 @@ app.get("/test", (req, res) => {
 
 //endpoints DASHBOARD
 
-const get_pending_petitions="SELECT ARCO_PETITIONS.PETITION_ID, CONCAT(CLIENT.CLIENT_NAME, ' ', CLIENT.CLIENT_FIRST_LASTNAME, ' ', CLIENT.CLIENT_SECOND_LASTNAME) AS CLIENT_FULL_NAME, CASE ARCO_PETITIONS.ARCO_RIGHT WHEN 1 THEN 'Acceso' WHEN 2 THEN 'Rectificación' WHEN 3 THEN 'Cancelación' WHEN 4 THEN 'Oposición' ELSE '' END AS ARCO_RIGHT, ARCO_PETITIONS.CREATED_AT FROM ARCO_PETITIONS INNER JOIN CLIENT ON ARCO_PETITIONS.CLIENT_ID = CLIENT.CLIENT_ID WHERE ARCO_PETITIONS.CURRENT_STATUS = 'pendiente';";
+const get_pending_petitions = `
+SELECT ARCO_PETITIONS.PETITION_ID, 
+CONCAT(CLIENT.CLIENT_NAME, ' ', CLIENT.CLIENT_FIRST_LASTNAME, ' ', CLIENT.CLIENT_SECOND_LASTNAME) AS CLIENT_FULL_NAME,
+CASE ARCO_PETITIONS.ARCO_RIGHT 
+WHEN 1 THEN 'Acceso' 
+WHEN 2 THEN 'Rectificación' 
+WHEN 3 THEN 'Cancelación' 
+WHEN 4 THEN 'Oposición' 
+ELSE '' 
+END AS ARCO_RIGHT,
+ARCO_PETITIONS.CREATED_AT 
+FROM ARCO_PETITIONS
+INNER JOIN CLIENT ON ARCO_PETITIONS.CLIENT_ID = CLIENT.CLIENT_ID
+WHERE ARCO_PETITIONS.CURRENT_STATUS = 'pendiente';
+`;
 
 app.get("/dashboard/pending", async (req, res) => {
     try {
@@ -38,7 +52,23 @@ app.get("/dashboard/pending", async (req, res) => {
     }
 });
 
-const get_notPending_petitions = "SELECT ARCO_PETITIONS.PETITION_ID, CONCAT(CLIENT.CLIENT_NAME, ' ', CLIENT.CLIENT_FIRST_LASTNAME, ' ', CLIENT.CLIENT_SECOND_LASTNAME) AS CLIENT_FULL_NAME, CASE ARCO_PETITIONS.ARCO_RIGHT WHEN 1 THEN 'Acceso' WHEN 2 THEN 'Rectificación' WHEN 3 THEN 'Cancelación' WHEN 4 THEN 'Oposición' ELSE '' END AS ARCO_RIGHT, ARCO_PETITIONS.CURRENT_STATUS, ARCO_PETITIONS.CREATED_AT, ARCO_PETITIONS.UPDATED_AT FROM ARCO_PETITIONS INNER JOIN CLIENT ON ARCO_PETITIONS.CLIENT_ID = CLIENT.CLIENT_ID WHERE ARCO_PETITIONS.CURRENT_STATUS != 'pendiente'";
+const get_notPending_petitions = `
+SELECT ARCO_PETITIONS.PETITION_ID, 
+CONCAT(CLIENT.CLIENT_NAME, ' ', CLIENT.CLIENT_FIRST_LASTNAME, ' ', CLIENT.CLIENT_SECOND_LASTNAME) AS CLIENT_FULL_NAME, 
+CASE ARCO_PETITIONS.ARCO_RIGHT 
+WHEN 1 THEN 'Acceso' 
+WHEN 2 THEN 'Rectificación' 
+WHEN 3 THEN 'Cancelación' 
+WHEN 4 THEN 'Oposición' 
+ELSE '' 
+END AS ARCO_RIGHT, 
+ARCO_PETITIONS.CURRENT_STATUS, 
+ARCO_PETITIONS.CREATED_AT, 
+ARCO_PETITIONS.UPDATED_AT 
+FROM ARCO_PETITIONS 
+INNER JOIN CLIENT ON ARCO_PETITIONS.CLIENT_ID = CLIENT.CLIENT_ID
+WHERE ARCO_PETITIONS.CURRENT_STATUS != 'pendiente'";
+`;
 
 app.get("/dashboard/notPending", async (req, res) => {
     try {
@@ -54,11 +84,32 @@ app.get("/dashboard/notPending", async (req, res) => {
 });
 
 //endpoints USER
+
+const get_client_info = `
+SELECT CLIENT_ID, CONCAT(CLIENT_NAME, ' ', CLIENT_FIRST_LASTNAME, ' ', CLIENT_SECOND_LASTNAME) AS full_name, 
+    CLIENT_BIRTHDATE, 
+    CLIENT_NATIONALITY, 
+    CLIENT_STATE_OF_BIRTH, 
+    CLIENT_CURP, 
+    CLIENT_ECONOMIC_ACTIVITY,
+    CLIENT_GENDER, 
+    CLIENT_PHONE_NUMBER, 
+    CLIENT_EMAIL, 
+    IS_CLIENT, 
+    IS_BLOCKED, 
+    IS_IN_OPOSITION, 
+    CREATED_AT, 
+    UPDATED_AT, 
+    DELETED_AT
+    FROM CLIENT
+    WHERE CLIENT_ID = ?;
+`;
+
 app.get('/user/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const connection = await pool.getConnection();
-        const [rows] = await connection.execute('SELECT * FROM CLIENT WHERE CLIENT_ID=?', [id]);
+        const [rows] = await connection.execute(get_client_info, [id]);
         connection.release();
         res.json(rows[0]);
 
