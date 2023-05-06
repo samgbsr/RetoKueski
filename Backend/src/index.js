@@ -11,7 +11,7 @@ app.use(cors());
 
 
 //puerto localhost
-app.listen(PORT, () => {
+app.listeudern(PORT, () => {
     console.log(`Server listening on ${PORT}`);
 });
 
@@ -176,7 +176,7 @@ CLIENT.UPDATED_AT = NOW()
 WHERE CLIENT.CLIENT_ID = ?;
 `;
 
-app.patch('/user/:id/rectification', async (req, res) => {
+app.put('/user/:id/rectification', async (req, res) => {
     const { id } = req.params;
     try {
         const connection = await pool.getConnection();
