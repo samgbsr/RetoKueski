@@ -11,7 +11,7 @@ app.use(cors());
 
 
 //puerto localhost
-app.listeudern(PORT, () => {
+app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`);
 });
 
