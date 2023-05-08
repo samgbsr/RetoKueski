@@ -4,9 +4,9 @@ import { SSRProvider } from '@react-aria/ssr';
 import { Tab, Tabs, Container, Row, Col, Button, ButtonGroup, Form, Modal, Navbar, Toast, Nav, Alert, Card, Image, Pagination, Table } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.css'
 
-function HomePage({ data, pendingData, notPendingData }) {
+function HomePage({ pendingData, notPendingData }) {
 
-    if (!data || !pendingData || !notPendingData) {
+    if ( !pendingData || !notPendingData) {
         return <div>Loading...</div>
     }
 
@@ -581,8 +581,6 @@ function HomePage({ data, pendingData, notPendingData }) {
 // This function gets called at build time
 export async function getServerSideProps() {
     // Fetch data from external API
-    const res = await fetch(`https://tc2005b-sem2023-production.up.railway.app/comments`)
-    const data = await res.json()
 
     const resPendingData = await fetch(`https://retokueski-production.up.railway.app/dashboard/pending`)
     const pendingData = await resPendingData.json()
@@ -590,7 +588,7 @@ export async function getServerSideProps() {
     const resNotPendingData = await fetch(`https://retokueski-production.up.railway.app/dashboard/notPending`)
     const notPendingData = await resNotPendingData.json()
     // Pass data to the page via props
-    return { props: { data, pendingData, notPendingData } }
+    return { props: { pendingData, notPendingData } }
 }
 
 export default HomePage
